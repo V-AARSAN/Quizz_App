@@ -1,0 +1,18 @@
+#test-background{
+    background-image: url('../images/10136664_17973871.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+#quize-background{
+    background-image: url('../images/4489601_2369435.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.adjust-card{
+    min-height: 90vh;
+    max-height: 100vh;
+}
+
