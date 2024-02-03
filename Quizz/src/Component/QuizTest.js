@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { Button, Card, Col, Container, Form, FormCheck, Row, Stack } from 'react-bootstrap'
+import { Button, Card, Col, Container, Form, FormCheck, FormGroup, Row, Stack } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { getQuizeQuestions } from '../Redux/QuizSlice/QuizeActions';
 import '../assets/Css/style.css';
@@ -21,7 +21,7 @@ export default function QuizTest() {
         wrongAnswer:0,
         correctAnswer:0
     })
-    
+    const[selectedAnswer, setSelectedAnswer] = useState()
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
@@ -56,13 +56,6 @@ export default function QuizTest() {
     },[decodedCorrect_anwser, decodedIncorrect_Answer])
 
     // handling check box
-    const handleCheckbox = (data) =>{
-      if(!checkedAnswers.includes(data)){
-        setCheckedAnswers((prev)=>[...prev , data])
-      }else{
-        setCheckedAnswers((Prev)=>Prev.filter((item)=>item !== data))
-      }
-    }
 
   //  handling the next button
     const incrementValue = () =>{
@@ -101,11 +94,12 @@ export default function QuizTest() {
       setQuestionNum((prev)=>prev + 1)
       setCheckedAnswers([])
       setTime(30)
+      setSelectedAnswer('')
     }
   
     // after 10 seconds the useeffect trigger next questiom 
     useEffect(()=>{
-      let timer =   setTimeout(() => {
+      let timer =   setInterval(() => {
         setTime((prevTime) => prevTime - 1);
     
         if (time === 0) {
@@ -117,8 +111,13 @@ export default function QuizTest() {
 
     },[incrementValue])
 
-  
-   
+  const handleChoices = (data,index) =>{
+      setSelectedAnswer(index)
+      setCheckedAnswers(data)
+  }
+
+  console.log(checkedAnswers,)
+   console.log(decodedCorrect_anwser)
 
   return (
     <>
@@ -141,14 +140,14 @@ export default function QuizTest() {
               <h4>{questionNum}.{decodedQuestion}</h4>
               
               <Row className='py-3 flex-grow-1'>
-                <Col lg={7}>
+                <Col lg={8}>
                   <Stack gap={3} className='mx-3 '>
                     {/* mapping the shuffled choices */}
                     {shuffledChoices.length > 0 && 
                       shuffledChoices.map((data, index) => (
-                        <Card key={index}>
-                          <FormCheck type='checkbox' value={data} label={data} name="answer" className='text-nowrap mx-2'  checked={checkedAnswers.includes(data) || false} onChange={() => handleCheckbox(data)} />
-                        </Card>
+                        <Button variant={selectedAnswer === index ? 'outline-success ' : 'outline-warning'} onClick={()=>handleChoices(data,index)} className={selectedAnswer === index ? 'active' : null} key={index}>
+                          <Form.Check name='choices' className='text-dark text-start fw-bold' checked={selectedAnswer === index ? true : false }  label={data} />
+                        </Button>
                       ))
                     }
                   </Stack>
